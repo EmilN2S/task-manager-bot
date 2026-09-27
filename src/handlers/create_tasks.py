@@ -1,5 +1,4 @@
 from aiogram import Router, F
-from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
@@ -9,10 +8,11 @@ from keyboards.priority import priority_keyboard
 
 router = Router()
 
-@router.message(Command("add_task"))
-async def tasks_handler(message: Message, state: FSMContext):
-    await message.answer("Please enter the task name:")
+@router.callback_query(F.data == "add_task")
+async def tasks_handler(callback: CallbackQuery, state: FSMContext):
+    await callback.message.answer("Please enter the task name:")
     await state.set_state(TaskStates.task_name)
+    await callback.answer()
 
 @router.message(TaskStates.task_name, F.text)
 async def process_task_name(message: Message, state: FSMContext):
