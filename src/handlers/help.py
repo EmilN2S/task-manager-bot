@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message, callback_query
 
-from keyboards.inline import main_keyboard
+from keyboards.main_inline import main_keyboard
 
 router = Router()
 
