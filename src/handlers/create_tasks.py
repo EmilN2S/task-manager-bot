@@ -31,5 +31,5 @@ async def process_task_priority(callback: CallbackQuery, state: FSMContext):
     await state.update_data(task_priority=callback.data)
     # add here connect to database and save the task
     await state.clear()
-    await callback.message.answer("Task saved successfully!")
+    await callback.message.answer(f"✅ Priority set: <b>{callback.data}</b>\nTask saved successfully!", parse_mode="HTML")
     await callback.answer()
