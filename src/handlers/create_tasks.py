@@ -9,7 +9,7 @@ from keyboards.priority import priority_keyboard
 
 router = Router()
 
-@router.message(Command("tasks"))
+@router.message(Command("add_task"))
 async def tasks_handler(message: Message, state: FSMContext):
     await message.answer("Please enter the task name:")
     await state.set_state(TaskStates.task_name)
