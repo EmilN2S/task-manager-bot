@@ -6,6 +6,8 @@ from states.tasks_states import TaskStates
 
 from keyboards.priority import priority_keyboard
 
+from database.db import add_task
+
 router = Router()
 
 @router.callback_query(F.data == "add_task")
@@ -29,7 +31,10 @@ async def process_task_description(message: Message, state: FSMContext):
 @router.callback_query(TaskStates.task_priority)
 async def process_task_priority(callback: CallbackQuery, state: FSMContext):
     await state.update_data(task_priority=callback.data)
-    # add here connect to database and save the task
+    # Save all parameters to the data instead of passing them as arguments to the add_task function manually.
+    data = await state.get_data()
+    await add_task(user_id=callback.from_user.id, title=data['task_name'], description=data['task_description'], priority=0 if data['task_priority'] == "simple" else 1)
+
     await state.clear()
     await callback.message.answer(f"✅ Priority set: <b>{callback.data}</b>\nTask saved successfully!", parse_mode="HTML")
     await callback.answer()
