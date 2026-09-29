@@ -1,8 +1,11 @@
 import aiosqlite
+from pathlib import Path
 
-DB_NAME = "tasks.db"
+DB_DIR = Path(__file__).parent / "data"
+DB_NAME = DB_DIR / "tasks.db"
 
 async def init_db():
+    DB_DIR.mkdir(exist_ok=True)
     async with aiosqlite.connect(DB_NAME) as db:
         await db.execute("""
         CREATE TABLE IF NOT EXISTS tasks (
@@ -11,7 +14,7 @@ async def init_db():
             title TEXT NOT NULL,
             description TEXT,
             completed BOOLEAN DEFAULT FALSE,
-            priority INTEGER DEFAULT 0
+            priority BOOLEAN DEFAULT 0
         )
         """)
         await db.commit()
