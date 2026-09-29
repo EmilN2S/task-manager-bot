@@ -8,6 +8,8 @@ from handlers.start import router as start_router
 from handlers.help import router as help_router
 from handlers.create_tasks import router as create_tasks_router
 
+from database.db import init_db
+
 load_dotenv()
 
 TOKEN = getenv("BOT_TOKEN")
@@ -19,6 +21,7 @@ dp.include_router(create_tasks_router)
 
 async def main():
     bot = Bot(token=TOKEN)
+    await init_db()
     await dp.start_polling(bot)
 
 
