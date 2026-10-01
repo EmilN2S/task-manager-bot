@@ -14,7 +14,7 @@ async def init_db():
             title TEXT NOT NULL,
             description TEXT,
             completed BOOLEAN DEFAULT FALSE,
-            priority BOOLEAN DEFAULT 0
+            priority BOOLEAN DEFAULT FALSE
         )
         """)
         await db.commit()
@@ -32,3 +32,7 @@ async def get_tasks(user_id):
         cursor = await db.execute("SELECT id, title, description, priority FROM tasks WHERE user_id = ?", (user_id,))
         return await cursor.fetchall()
         
+async def change_task_status(user_id, id, completed):
+    async with aiosqlite.connect(DB_NAME) as db:
+        await db.execute("UPDATE tasks SET completed = ? WHERE user_id = ? AND id = ?", (completed, user_id, id))
+        await db.commit()
