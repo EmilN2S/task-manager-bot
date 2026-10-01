@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from states.tasks_states import TaskStates
+from states.create_task_states import TaskStates
 
 from keyboards.priority import priority_keyboard
 
