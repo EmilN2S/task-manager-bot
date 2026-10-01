@@ -8,6 +8,7 @@ from handlers.start import router as start_router
 from handlers.help import router as help_router
 from handlers.create_tasks import router as create_tasks_router
 from handlers.list_tasks import router as list_tasks_router
+from handlers.task_status import router as task_status_router
 
 from database.db import init_db
 
@@ -20,6 +21,7 @@ dp.include_router(start_router)
 dp.include_router(help_router)
 dp.include_router(create_tasks_router)
 dp.include_router(list_tasks_router)
+dp.include_router(task_status_router)
 
 async def main():
     bot = Bot(token=TOKEN)
