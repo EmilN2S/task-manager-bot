@@ -31,6 +31,11 @@ async def get_tasks(user_id):
     async with aiosqlite.connect(DB_NAME) as db:
         cursor = await db.execute("SELECT id, title, description, priority FROM tasks WHERE user_id = ?", (user_id,))
         return await cursor.fetchall()
+
+async def get_tasks_lite(user_id):
+    async with aiosqlite.connect(DB_NAME) as db:
+        cursor = await db.execute("SELECT id, title FROM tasks WHERE user_id = ?", (user_id,))
+        return await cursor.fetchall()
         
 async def change_task_status(user_id, id, completed):
     async with aiosqlite.connect(DB_NAME) as db:
