@@ -9,6 +9,5 @@ def main_keyboard() -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="📊 Change Task Status", callback_data="task_status")],
             [InlineKeyboardButton(text="❓ Help", callback_data="help")],
         ],
-        resize_keyboard=True,
     )
     return keyboard

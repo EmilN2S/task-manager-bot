@@ -6,6 +6,5 @@ def priority_keyboard() -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="Simple", callback_data="simple")],
             [InlineKeyboardButton(text="Important", callback_data="important")],
         ],
-        resize_keyboard=True,
     )
     return keyboard
