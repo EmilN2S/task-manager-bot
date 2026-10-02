@@ -13,6 +13,7 @@ router = Router()
 
 @router.callback_query(F.data == "task_status")
 async def list_tasks_callback_handler(callback_query: CallbackQuery, state: FSMContext):
+    await callback_query.answer()
     tasks = await get_tasks_lite(callback_query.from_user.id)
     if not tasks:
         await callback_query.message.answer("You have no tasks to change the status for.")
@@ -21,7 +22,7 @@ async def list_tasks_callback_handler(callback_query: CallbackQuery, state: FSMC
     task_list = "\n".join([f"- {task}" for task in tasks])
     await callback_query.message.answer(f"Here are your tasks:\n{task_list}\nPlease enter the ID of the task you want to change the status for.")
     await state.set_state(Priority_States.task_id)
-    await callback_query.answer()
+
 
 @router.message(Priority_States.task_id, F.text)
 async def process_task_id(message: Message, state: FSMContext):
@@ -36,12 +37,12 @@ async def process_task_id(message: Message, state: FSMContext):
 @router.callback_query(Priority_States.task_status, F.data == "finish")
 async def process_task_status(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    await change_task_status(user_id=callback.from_user.id, task_id=data['task_id'], status="Finished")
+    await change_task_status(user_id=callback.from_user.id, id=data['task_id'], completed=True)
     await state.clear()
     await callback.message.answer(f"✅ Task ID: <b>{data['task_id']}</b> status changed to: <b>Finished</b>", parse_mode="HTML")
     await callback.answer()
 
-@router.callback_query(F.data == "cancel")
+@router.callback_query(Priority_States.task_status, F.data == "cancel")
 async def process_task_priority(callback: CallbackQuery, state: FSMContext):
     await state.clear()
     await callback.answer()
