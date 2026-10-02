@@ -41,3 +41,8 @@ async def change_task_status(user_id, id, completed):
     async with aiosqlite.connect(DB_NAME) as db:
         await db.execute("UPDATE tasks SET completed = ? WHERE user_id = ? AND id = ?", (completed, user_id, id))
         await db.commit()
+
+async def delete_task(user_id, id):
+    async with aiosqlite.connect(DB_NAME) as db:
+        await db.execute("DELETE FROM tasks WHERE user_id = ? AND id = ?", (user_id, id))
+        await db.commit()
