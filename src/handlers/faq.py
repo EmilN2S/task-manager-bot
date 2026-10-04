@@ -26,7 +26,7 @@ A: Yes, under the MIT license. The code is available via the "Source code" butto
 """
 
 @router.callback_query(F.data == "faq")
-async def help_callback_handler(callback_query: CallbackQuery):
+async def faq_callback_handler(callback_query: CallbackQuery):
     await callback_query.message.answer(FAQ_TEXT, reply_markup=help_keyboard())
     await callback_query.answer()
 
