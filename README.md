@@ -1,4 +1,6 @@
 # task-manager-bot
 An bot for managing daily tasks
 
-Bot current version: v0.0.2
+<p>
+  Bot current version: <img src="https://img.shields.io/github/v/tag/EmilN2S/password-bot" alt="Version">
+</p>
