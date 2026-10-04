@@ -7,7 +7,15 @@ from keyboards.main_inline import main_keyboard
 router = Router()
 
 HELP_TEXT = """
-Here will be help information. (Coming soon!)
+📖 Help & Support
+
+Need help with the bot?
+
+❓ FAQ — frequently asked questions
+🔒 Privacy — information about data storage
+💻 Source Code — view the project on GitHub
+
+↩️ To return to the main menu, use /start.
 """
 
 @router.callback_query(F.data == "help")
