@@ -17,8 +17,8 @@ What we don't do:
 - We don't read your other chats or messages
 
 Your data:
-- Tasks are stored in <where: database / file>
-- To delete your data, <how: command / contact via GitHub issues>
+- Tasks are stored in src/database/data
+- To delete your data, how: Delete task main keyboard
 """
 
 @router.callback_query(F.data == "privacy")
