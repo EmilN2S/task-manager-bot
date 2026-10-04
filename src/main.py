@@ -10,6 +10,7 @@ from handlers.create_tasks import router as create_tasks_router
 from handlers.list_tasks import router as list_tasks_router
 from handlers.task_status import router as task_status_router
 from handlers.delete_task import router as delete_task_router
+from handlers.faq import router as faq_router
 
 from database.db import init_db
 
@@ -24,6 +25,7 @@ dp.include_router(create_tasks_router)
 dp.include_router(list_tasks_router)
 dp.include_router(task_status_router)
 dp.include_router(delete_task_router)
+dp.include_router(faq_router)
 
 async def main():
     bot = Bot(token=TOKEN)
