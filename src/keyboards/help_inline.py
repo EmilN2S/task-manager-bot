@@ -5,7 +5,7 @@ def help_keyboard() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [InlineKeyboardButton(text="❓ FAQ", callback_data="faq")],
             [InlineKeyboardButton(text="🔒 Privacy", callback_data="privacy")],
-            [InlineKeyboardButton(text="💻 Source Code", callback_data="source_code")],
+            [InlineKeyboardButton(text="💻 Source Code", url="https://github.com/EmilN2S/task-manager-bot")],
         ]
     )
 
