@@ -4,3 +4,4 @@ class TaskStates(StatesGroup):
     task_name = State()
     task_description = State()
     task_priority = State()
+    task_deadline = State()
