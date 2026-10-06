@@ -14,29 +14,30 @@ async def init_db():
             title TEXT NOT NULL,
             description TEXT,
             completed BOOLEAN DEFAULT FALSE,
-            priority BOOLEAN DEFAULT FALSE
+            priority BOOLEAN DEFAULT FALSE,
+            deadline TEXT
         )
         """)
         await db.commit()
 
-async def add_task(user_id, title, description=None, priority=0):
+async def add_task(user_id, title, description=None, priority=0, deadline=None):
     async with aiosqlite.connect(DB_NAME) as db:
         await db.execute("""
-        INSERT INTO tasks (user_id, title, description, priority)
-        VALUES (?, ?, ?, ?)
-        """, (user_id, title, description, priority))
+        INSERT INTO tasks (user_id, title, description, priority, deadline)
+        VALUES (?, ?, ?, ?, ?)
+        """, (user_id, title, description, priority, deadline))
         await db.commit()
 
 async def get_tasks(user_id):
     async with aiosqlite.connect(DB_NAME) as db:
-        cursor = await db.execute("SELECT id, title, description, priority, completed FROM tasks WHERE user_id = ?", (user_id,))
+        cursor = await db.execute("SELECT id, title, description, priority, completed, deadline FROM tasks WHERE user_id = ?", (user_id,))
         return await cursor.fetchall()
 
 async def get_tasks_lite(user_id):
     async with aiosqlite.connect(DB_NAME) as db:
         cursor = await db.execute("SELECT id, title FROM tasks WHERE user_id = ?", (user_id,))
         return await cursor.fetchall()
-        
+
 async def change_task_status(user_id, id, completed):
     async with aiosqlite.connect(DB_NAME) as db:
         await db.execute("UPDATE tasks SET completed = ? WHERE user_id = ? AND id = ?", (completed, user_id, id))
