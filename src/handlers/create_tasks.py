@@ -11,16 +11,22 @@ from database.db import add_task
 
 router = Router()
 
+@router.callback_query(F.data == "cancel")
+async def cancel_callback(callback: CallbackQuery, state: FSMContext):
+    await state.clear()
+    await callback.message.edit_text("Creating task canceled")
+    await callback.answer()
+
 @router.callback_query(F.data == "add_task")
 async def tasks_handler(callback: CallbackQuery, state: FSMContext):
-    await callback.message.answer("Please enter the task name:")
+    await callback.message.answer("Please enter the task name:", reply_markup=cancel_keyboard())
     await state.set_state(TaskStates.task_name)
     await callback.answer()
 
 @router.message(TaskStates.task_name, F.text)
 async def process_task_name(message: Message, state: FSMContext):
     await state.update_data(task_name=message.text)
-    await message.answer("Please enter the task description:")
+    await message.answer("Please enter the task description:", reply_markup=cancel_keyboard())
     await state.set_state(TaskStates.task_description)
 
 @router.message(TaskStates.task_description, F.text)
