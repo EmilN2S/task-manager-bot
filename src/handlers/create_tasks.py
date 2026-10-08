@@ -38,10 +38,16 @@ async def process_task_description(message: Message, state: FSMContext):
 @router.callback_query(TaskStates.task_priority)
 async def process_task_priority(callback: CallbackQuery, state: FSMContext):
     await state.update_data(task_priority=callback.data)
+    await callback.message.answer(f"Priority set: <b>{callback.data}</b>\n\nPlease enter the task Deadline, you can save task with empty deadline", parse_mode="HTML", reply_markup=cancel_keyboard())
+    await state.set_state(TaskStates.task_deadline)
+    await callback.answer()
+
+@router.message(TaskStates.task_deadline, F.text)
+async def process_task_deadline(message: Message, state: FSMContext):
+    await state.update_data(task_deadline=message.text)
     # Save all parameters to the data instead of passing them as arguments to the add_task function manually.
     data = await state.get_data()
-    await add_task(user_id=callback.from_user.id, title=data['task_name'], description=data['task_description'], priority=0 if data['task_priority'] == "simple" else 1)
+    await add_task(user_id=message.from_user.id, title=data['task_name'], description=data['task_description'], priority=0 if data['task_priority'] == "simple" else 1, deadline=data["task_deadline"])
 
     await state.clear()
-    await callback.message.answer(f"✅ Priority set: <b>{callback.data}</b>\nTask saved successfully!", parse_mode="HTML")
-    await callback.answer()
+    await message.answer("✅ Task saved successfully!")
