@@ -10,6 +10,8 @@ from keyboards.deadline import deadline_keyboard
 
 from database.db import add_task
 
+from utils import priority_str_to_num
+
 router = Router()
 
 @router.callback_query(F.data == "cancel")
@@ -24,7 +26,7 @@ async def save_task(user_id: int, state: FSMContext, deadline: str | None) -> No
         user_id=user_id,
         title=data["task_name"],
         description=data["task_description"],
-        priority=0 if data["task_priority"] == "simple" else 1,
+        priority=priority_str_to_num(data["task_priority"]),
         deadline=deadline,
     )
     await state.clear()
