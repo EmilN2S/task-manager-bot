@@ -19,9 +19,9 @@ async def start_delete(callback: CallbackQuery, state: FSMContext):
         await callback.message.answer("You have no tasks.")
         return
 
-    task_list = "\n".join(f"- {task}" for task in tasks)
+    task_list = "\n".join(f"{task_id}. {title}" for task_id, title in tasks)
     await callback.message.answer(
-        f"Here are your tasks:\n{task_list}\nEnter the task ID you want to delete"
+        f"Here are your tasks:\n\n{task_list}\n\nEnter the task ID you want to delete"
     )
     await state.set_state(DeleteTaskStates.task_id)
 
