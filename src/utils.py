@@ -9,3 +9,9 @@ def priority_str_to_num(priority) -> int:
         return 1
     if priority == "simple":
         return 0
+
+def completed_num_to_str(completed) -> str:
+    if completed == 1:
+        return "✅ Yes"
+    if completed == 0:
+        return "❌ No"
