@@ -1,25 +1,21 @@
 # 📝 task-manager-bot
 
-A Telegram bot for managing your daily tasks right inside the chat. Create tasks, set priorities, track statuses and clean up what's done, all with inline buttons.
+A Telegram bot for managing your daily tasks right inside the chat. Create tasks with priorities and deadlines, track statuses and clean up what's done, all with inline buttons.
 
 <p>
-  <img src="https://img.shields.io/github/v/tag/EmilN2S/task-manager-bot" alt="Version">
-  <img src="https://img.shields.io/github/license/EmilN2S/task-manager-bot" alt="License">
-  <img src="https://img.shields.io/github/last-commit/EmilN2S/task-manager-bot" alt="Last commit">
+<img src="https://img.shields.io/github/v/tag/EmilN2S/task-manager-bot" alt="Version">
+<img src="https://img.shields.io/github/license/EmilN2S/task-manager-bot" alt="License">
+<img src="https://img.shields.io/github/last-commit/EmilN2S/task-manager-bot" alt="Last commit">
 </p>
 
 ## ✨ Features
 
-- Create tasks with a priority
-- View your task list
+- Create tasks with a title, description, priority and deadline
+- View your task list with priority, deadline and completion status
 - Change task status
-- Delete tasks
+- Delete tasks by ID
 - Navigation through inline keyboard buttons, no need to remember commands
 - Built-in Help, FAQ and Privacy sections
-
-## 🚧 Roadmap
-
-- [ ] Task deadlines (planned after the main release)
 
 ## 🛠 Tech stack
 
@@ -93,6 +89,7 @@ task-manager-bot/
 ├── uv.lock
 └── src/
     ├── main.py          # entry point
+    ├── utils.py         # helpers (priority and status to text)
     ├── database/        # SQLite access (db.py) and data/ with tasks.db
     ├── handlers/        # start, help, faq, privacy, create/list/delete tasks, task status
     ├── keyboards/       # inline keyboards (main menu, help, priority, status, delete)
