@@ -1,4 +1,5 @@
 from aiogram import Router, F
+from aiogram.methods import edit_message_reply_markup
 from aiogram.types import CallbackQuery
 
 from keyboards.help_inline import help_keyboard
@@ -27,6 +28,7 @@ A: Yes, under the MIT license. The code is available via the "Source code" butto
 
 @router.callback_query(F.data == "faq")
 async def faq_callback_handler(callback_query: CallbackQuery):
+    await callback_query.message.edit_reply_markup(reply_markup=None)
     await callback_query.message.answer(FAQ_TEXT, reply_markup=help_keyboard())
     await callback_query.answer()
 
