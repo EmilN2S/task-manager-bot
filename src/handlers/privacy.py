@@ -23,5 +23,6 @@ Your data:
 
 @router.callback_query(F.data == "privacy")
 async def privacy_callback_handler(callback_query: CallbackQuery):
+    await callback_query.message.edit_reply_markup(reply_markup=None)
     await callback_query.message.answer(PRIVACY_TEXT, reply_markup=help_keyboard())
     await callback_query.answer()

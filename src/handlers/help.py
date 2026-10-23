@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.filters import Command
-from aiogram.types import Message, callback_query
+from aiogram.types import Message, CallbackQuery
 
 from keyboards.help_inline import help_keyboard
 
@@ -19,7 +19,7 @@ Need help with the bot?
 """
 
 @router.callback_query(F.data == "help")
-async def help_callback_handler(callback_query: callback_query):
+async def help_callback_handler(callback_query: CallbackQuery):
     await callback_query.message.answer(HELP_TEXT, reply_markup=help_keyboard())
     await callback_query.answer()
 

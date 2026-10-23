@@ -23,6 +23,7 @@ async def start_delete(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(
         f"Here are your tasks:\n\n{task_list}\n\nEnter the task ID you want to delete"
     )
+    await callback.message.edit_reply_markup(reply_markup=None)
     await state.set_state(DeleteTaskStates.task_id)
 
 @router.message(DeleteTaskStates.task_id, F.text)
@@ -50,7 +51,7 @@ async def process_task_delete(callback: CallbackQuery, state: FSMContext):
 
     await state.clear()
     await callback.message.answer(
-        f"✅ Task ID: <b>{task_id}</b> has been deleted.", parse_mode="HTML"
+        f"✅ Task ID: <b>{task_id}</b> has been deleted.", parse_mode="HTML", reply_markup=main_keyboard()
     )
 
 @router.callback_query(DeleteTaskStates.ask_confirm, F.data == "cancel")

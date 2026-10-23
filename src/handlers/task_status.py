@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from keyboards.status import status_keyboard
+from keyboards.main_inline import  main_keyboard
 
 from states.priority_status import PriorityStates
 
@@ -23,6 +24,12 @@ async def list_tasks_callback_handler(callback_query: CallbackQuery, state: FSMC
     await callback_query.message.answer(f"Here are your tasks:\n{task_list}\nPlease enter the ID of the task you want to change the status for.")
     await state.set_state(PriorityStates.task_id)
 
+@router.callback_query(PriorityStates.task_status, F.data == "cancel")
+async def process_task_priority(callback: CallbackQuery, state: FSMContext):
+    await state.clear()
+    await callback.answer()
+    await callback.message.edit_reply_markup(reply_markup=None)
+    await callback.message.answer("Changes denied")
 
 @router.message(PriorityStates.task_id, F.text)
 async def process_task_id(message: Message, state: FSMContext):
@@ -33,17 +40,10 @@ async def process_task_id(message: Message, state: FSMContext):
     await message.answer("Choose Finish if the task is completed, or Cancel to keep it active.", reply_markup=status_keyboard())
     await state.set_state(PriorityStates.task_status)
 
-
 @router.callback_query(PriorityStates.task_status, F.data == "finish")
 async def process_task_status(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     await change_task_status(user_id=callback.from_user.id, id=data['task_id'], completed=True)
     await state.clear()
-    await callback.message.answer(f"✅ Task ID: <b>{data['task_id']}</b> status changed to: <b>Finished</b>", parse_mode="HTML")
+    await callback.message.answer(f"✅ Task ID: <b>{data['task_id']}</b> status changed to: <b>Finished</b>", parse_mode="HTML", reply_markup=main_keyboard())
     await callback.answer()
-
-@router.callback_query(PriorityStates.task_status, F.data == "cancel")
-async def process_task_priority(callback: CallbackQuery, state: FSMContext):
-    await state.clear()
-    await callback.answer()
-    await callback.message.answer("Changes denied")

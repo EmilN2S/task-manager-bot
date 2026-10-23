@@ -25,5 +25,6 @@ async def list_tasks_callback_handler(callback_query: CallbackQuery):
             )
         text = "Your tasks:\n\n" + "\n\n".join(lines)
 
+    await callback_query.message.edit_reply_markup(reply_markup=None)
     await callback_query.message.answer(text, reply_markup=main_keyboard())
     await callback_query.answer()

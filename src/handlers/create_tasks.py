@@ -2,6 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
+from keyboards.main_inline import main_keyboard
 from states.create_task_states import TaskStates
 
 from keyboards.priority import priority_keyboard
@@ -33,6 +34,7 @@ async def save_task(user_id: int, state: FSMContext, deadline: str | None) -> No
 
 @router.callback_query(F.data == "add_task")
 async def tasks_handler(callback: CallbackQuery, state: FSMContext):
+    await callback.message.edit_reply_markup(reply_markup=None)
     await callback.message.answer("Please enter the task name:", reply_markup=cancel_keyboard())
     await state.set_state(TaskStates.task_name)
     await callback.answer()
@@ -52,6 +54,7 @@ async def process_task_description(message: Message, state: FSMContext):
 @router.callback_query(TaskStates.task_priority)
 async def process_task_priority(callback: CallbackQuery, state: FSMContext):
     await state.update_data(task_priority=callback.data)
+    await callback.message.edit_reply_markup(reply_markup=None)
     await callback.message.answer(f"Priority set: <b>{callback.data}</b>\n\nPlease enter the task Deadline, you can save task with empty deadline", parse_mode="HTML", reply_markup=deadline_keyboard())
     await state.set_state(TaskStates.task_deadline)
     await callback.answer()
@@ -59,10 +62,11 @@ async def process_task_priority(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(TaskStates.task_deadline, F.data == "skip_deadline")
 async def skip_deadline(callback: CallbackQuery, state: FSMContext):
     await save_task(callback.from_user.id, state, deadline=None)
-    await callback.message.answer("✅ Task saved without a deadline!")
+    await callback.message.edit_reply_markup(reply_markup=None)
+    await callback.message.answer("✅ Task saved without a deadline!", reply_markup=main_keyboard())
     await callback.answer()
 
 @router.message(TaskStates.task_deadline, F.text)
 async def process_task_deadline(message: Message, state: FSMContext):
     await save_task(message.from_user.id, state, deadline=message.text)
-    await message.answer("✅ Task saved successfully!")
+    await message.answer("✅ Task saved successfully!", reply_markup=main_keyboard())
