@@ -12,7 +12,7 @@ async def main():
     conn = await asyncpg.connect(DATABASE_URL)
 
     await conn.execute('''
-        CREATE TABLE users(
+        CREATE TABLE IF NOT EXISTS users(
             id serial PRIMARY KEY,
             name text,
             dob date
@@ -28,7 +28,7 @@ async def main():
         'SELECT * FROM users WHERE name = $1', 'Bob')
     # *row* now contains
     # asyncpg.Record(id=1, name='Bob', dob=datetime.date(1984, 3, 1))
-
+    print(row)
     # Close the connection.
     await conn.close()
 
