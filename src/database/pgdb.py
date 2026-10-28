@@ -12,10 +12,14 @@ async def main():
     conn = await asyncpg.connect(DATABASE_URL)
 
     await conn.execute('''
-        CREATE TABLE IF NOT EXISTS users(
-            id serial PRIMARY KEY,
-            name text,
-            dob date
+        CREATE TABLE IF NOT EXISTS tasks (
+            id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            user_id INT NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT,
+            completed BOOLEAN DEFAULT FALSE,
+            priority BOOLEAN DEFAULT FALSE,
+            deadline DATE
         )
     ''')
 
