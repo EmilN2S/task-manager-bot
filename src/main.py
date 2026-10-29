@@ -4,7 +4,7 @@ import asyncio
 
 from aiogram import Bot, Dispatcher
 
-from pgdb import init_db, close_db
+from database.pgdb import init_db, close_db
 
 from handlers.start import router as start_router
 from handlers.help import router as help_router
