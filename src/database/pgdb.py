@@ -17,23 +17,23 @@ async def main():
             user_id INT NOT NULL,
             title TEXT NOT NULL,
             description TEXT,
-            completed BOOLEAN DEFAULT FALSE,
+            task_status BOOLEAN DEFAULT FALSE,
             priority BOOLEAN DEFAULT FALSE,
             deadline DATE
         )
     ''')
 
-    await conn.execute('''
-        INSERT INTO users(name, dob) VALUES($1, $2)
-    ''', 'Bob', datetime.date(1984, 3, 1))
-
-    # Select a row from the table.
     row = await conn.fetchrow(
-        'SELECT * FROM users WHERE name = $1', 'Bob')
-    # *row* now contains
-    # asyncpg.Record(id=1, name='Bob', dob=datetime.date(1984, 3, 1))
+        'SELECT * FROM tasks')
+
     print(row)
-    # Close the connection.
+
     await conn.close()
+
+async def add_tasks(user_id, title, description, priority, deadline):
+    await conn.execute('''
+        INSERT INTO tasks(user_id, title, description, priority, deadline) VALUES($1, $2, $3, $4, $5)
+    ''', user_id, title, description, priority, datetime.date(deadline))
+    
 
 run(main())
