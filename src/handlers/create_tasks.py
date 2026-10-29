@@ -55,7 +55,7 @@ async def process_task_description(message: Message, state: FSMContext):
 async def process_task_priority(callback: CallbackQuery, state: FSMContext):
     await state.update_data(task_priority=callback.data)
     await callback.message.edit_reply_markup(reply_markup=None)
-    await callback.message.answer(f"Priority set: <b>{callback.data}</b>\n\nPlease enter the task Deadline, you can save task with empty deadline", parse_mode="HTML", reply_markup=deadline_keyboard())
+    await callback.message.answer(f"Priority set: <b>{callback.data}</b>\n\nPlease enter the task Deadline, you can save task with empty deadline\nDeadline format will be [YYYY-MM-DD]", parse_mode="HTML", reply_markup=deadline_keyboard())
     await state.set_state(TaskStates.task_deadline)
     await callback.answer()
 
