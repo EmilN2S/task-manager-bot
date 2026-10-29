@@ -1,3 +1,5 @@
+import datetime
+
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
@@ -11,7 +13,7 @@ from keyboards.deadline import deadline_keyboard
 
 from database.pgdb import add_tasks
 
-from utils import priority_str_to_num
+from utils import priority_str_to_bool
 
 router = Router()
 
@@ -21,13 +23,13 @@ async def cancel_callback(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_text("Creating task canceled")
     await callback.answer()
 
-async def save_task(user_id: int, state: FSMContext, deadline: str | None) -> None:
+async def save_task(user_id: int, state: FSMContext, deadline: datetime.date | None) -> None:
     data = await state.get_data()
     await add_tasks(
         user_id=user_id,
         title=data["task_name"],
         description=data["task_description"],
-        priority=priority_str_to_num(data["task_priority"]),
+        priority=priority_str_to_bool(data["task_priority"]),
         deadline=deadline,
     )
     await state.clear()
@@ -68,5 +70,14 @@ async def skip_deadline(callback: CallbackQuery, state: FSMContext):
 
 @router.message(TaskStates.task_deadline, F.text)
 async def process_task_deadline(message: Message, state: FSMContext):
-    await save_task(message.from_user.id, state, deadline=message.text)
+    try:
+        deadline = datetime.date.fromisoformat(message.text.strip())
+    except ValueError:
+        await message.answer(
+            "❌ Wrong date format. Please use [YYYY-MM-DD], for example 2026-11-05",
+            reply_markup=deadline_keyboard(),
+        )
+        return
+
+    await save_task(message.from_user.id, state, deadline=deadline)
     await message.answer("✅ Task saved successfully!", reply_markup=main_keyboard())

@@ -24,9 +24,6 @@ async def close_db():
     await pool.close()
 
 async def add_tasks(user_id, title, description, priority, deadline):
-    if isinstance(deadline, str):
-        deadline = datetime.date.fromisoformat(deadline)
-
     await pool.execute('''
         INSERT INTO tasks(user_id, title, description, priority, deadline)
         VALUES($1, $2, $3, $4, $5)
