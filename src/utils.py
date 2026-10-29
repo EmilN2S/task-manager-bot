@@ -4,7 +4,7 @@ def priority_num_to_str(priority) -> str:
     if priority == False:
         return "Simple"
 
-def priority_str_to_num(priority) -> int:
+def priority_str_to_num(priority) -> bool:
     if priority == "important":
         return True
     if priority == "simple":
