@@ -24,7 +24,7 @@ async def close_db():
     await pool.close()
 
 async def add_tasks(user_id, title, description, priority, deadline):
-    if isinstance(deadline):
+    if isinstance(deadline, str):
         deadline = datetime.date.fromisoformat(deadline)
 
     await pool.execute('''
