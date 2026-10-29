@@ -4,6 +4,8 @@ import asyncio
 
 from aiogram import Bot, Dispatcher
 
+from pgdb import init_db, close_db
+
 from handlers.start import router as start_router
 from handlers.help import router as help_router
 from handlers.create_tasks import router as create_tasks_router
@@ -13,10 +15,9 @@ from handlers.delete_task import router as delete_task_router
 from handlers.faq import router as faq_router
 from handlers.privacy import router as privacy_router
 
-from database.db import init_db
-
 load_dotenv()
 
+DATABASE_URL = getenv("DATABASE_URL")
 TOKEN = getenv("BOT_TOKEN")
 
 dp = Dispatcher()
@@ -31,9 +32,11 @@ dp.include_router(privacy_router)
 
 async def main():
     bot = Bot(token=TOKEN)
-    await init_db()
-    await dp.start_polling(bot)
-
+    await init_db(DATABASE_URL)
+    try:
+        await dp.start_polling(bot)
+    finally:
+        await close_db()
 
 if __name__ == "__main__":
     asyncio.run(main())
