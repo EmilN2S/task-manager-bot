@@ -9,7 +9,7 @@ from keyboards.priority import priority_keyboard
 from keyboards.cancel import cancel_keyboard
 from keyboards.deadline import deadline_keyboard
 
-from database.db import add_task
+from database.pgdb import add_tasks
 
 from utils import priority_str_to_num
 
@@ -23,7 +23,7 @@ async def cancel_callback(callback: CallbackQuery, state: FSMContext):
 
 async def save_task(user_id: int, state: FSMContext, deadline: str | None) -> None:
     data = await state.get_data()
-    await add_task(
+    await add_tasks(
         user_id=user_id,
         title=data["task_name"],
         description=data["task_description"],
