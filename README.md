@@ -24,69 +24,91 @@ A Telegram bot for managing your daily tasks right inside the chat. Create tasks
 - PostgreSQL via [asyncpg](https://github.com/MagicStack/asyncpg)
 - python-dotenv for configuration
 - [uv](https://docs.astral.sh/uv/) for dependency management
-- Docker
+- Docker and Docker Compose
 
-## 📋 Requirements
-
-- Python 3.14
-- A running PostgreSQL server and a database for the bot
-
-## 🚀 Installation
-
-```bash
-git clone https://github.com/EmilN2S/task-manager-bot.git
-cd task-manager-bot
-```
-
-With uv:
-
-```bash
-uv sync
-```
-
-Or with pip:
-
-```bash
-python -m venv venv
-source venv/bin/activate      # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
+> **Note:** the bot only contains the PostgreSQL *client* (asyncpg). The PostgreSQL *server* is a separate program: the Docker Compose setup below starts it for you, and for a local run you need your own.
 
 ## ⚙️ Configuration
 
-Create a `.env` file in the project root:
+Get a bot token from [@BotFather](https://t.me/BotFather), then create a `.env` file in the project root:
 
 ```env
 BOT_TOKEN=your_telegram_bot_token
 DATABASE_URL=postgresql://user:password@localhost:5432/tasksdb
 ```
 
-Get a token from [@BotFather](https://t.me/BotFather). `DATABASE_URL` points to your PostgreSQL database; create the database first (for example with `createdb tasksdb`).
+`DATABASE_URL` format: `postgresql://USER:PASSWORD@HOST:PORT/DATABASE`.
 
-## ▶️ Usage
+## 🐳 Quick start with Docker Compose (recommended)
+
+Requires Docker with the Compose plugin. This starts both PostgreSQL and the bot.
 
 ```bash
-uv run python src/main.py
-# or, without uv:
-python src/main.py
+git clone https://github.com/EmilN2S/task-manager-bot.git
+cd task-manager-bot
+# create .env with BOT_TOKEN (see Configuration)
+docker compose up -d --build
 ```
+
+Useful commands:
+
+```bash
+docker compose logs -f bot    # watch the bot logs
+docker compose ps             # check that both services are running
+docker compose down           # stop everything (data is kept)
+docker compose down -v        # stop everything AND delete the database
+```
+
+Compose sets the database host to `db` for the bot automatically, so the `localhost` value in `.env` is ignored here. Tasks are stored in the `pgdata` volume and survive restarts and rebuilds. The default database credentials are in `docker-compose.yml`, so change them before exposing the database outside your machine.
 
 Then open your bot in Telegram and send `/start`.
 
-## 🐳 Docker
+## 💻 Run locally without Docker
 
-```bash
-docker build -t task-manager-bot .
-docker run -d --env-file .env task-manager-bot
-```
+You need Python 3.14 and a running PostgreSQL server.
 
-The container needs network access to your PostgreSQL server, so make sure `DATABASE_URL` in `.env` uses a host that is reachable from inside the container (not `localhost`, unless you run it with `--network host`). Task data lives in PostgreSQL, so no volume is needed for the bot itself.
+1. Create the database, for example:
+
+   ```bash
+   sudo -u postgres psql -c "CREATE USER bot WITH PASSWORD 'secret';"
+   sudo -u postgres psql -c "CREATE DATABASE tasksdb OWNER bot;"
+   ```
+
+2. Set `DATABASE_URL` in `.env` to match, e.g. `postgresql://bot:secret@localhost:5432/tasksdb`.
+
+3. Install dependencies and start the bot.
+
+   With uv:
+
+   ```bash
+   uv sync
+   uv run python src/main.py
+   ```
+
+   Or with pip:
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate      # Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   python src/main.py
+   ```
+
+Then open your bot in Telegram and send `/start`.
+
+## 🔧 Troubleshooting
+
+- **`connection refused` or the bot can't reach the database:** in Docker the host must be `db` (Compose handles this), not `localhost`. Locally, check that PostgreSQL is running.
+- **`password authentication failed`:** the user and password in `DATABASE_URL` must match your PostgreSQL user, or the values in `docker-compose.yml`. If you changed them after the first start, run `docker compose down -v` once, because the old credentials are stored in the volume.
+- **Build is slow or huge:** make sure `.dockerignore` exists, so `.venv` and `.git` are not copied into the image.
 
 ## 📁 Project structure
 
 ```
 task-manager-bot/
 ├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
 ├── LICENSE
 ├── pyproject.toml
 ├── requirements.txt
