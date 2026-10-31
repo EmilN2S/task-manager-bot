@@ -1,4 +1,3 @@
-import datetime
 import asyncpg
 
 pool = None
