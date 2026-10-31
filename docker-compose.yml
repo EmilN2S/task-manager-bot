@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bot
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: task_manager
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bot -d task_manager"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  bot:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Overrides DATABASE_URL from .env: inside Compose the host is "db", not "localhost"
+      DATABASE_URL: postgresql://bot:secret@db:5432/task_manager
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
