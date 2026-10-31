@@ -6,7 +6,7 @@ from keyboards.delete import delete_keyboard
 from keyboards.main_inline import main_keyboard
 
 from states.delete_task import DeleteTaskStates
-from database.db import get_tasks_lite, delete_task
+from database.pgdb import get_tasks_lite, delete_task
 
 router = Router()
 

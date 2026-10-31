@@ -33,3 +33,12 @@ async def get_tasks(user_id):
         SELECT task_id, title, description, task_status, priority, deadline 
         FROM tasks WHERE user_id = $1''', user_id)
     return rows
+
+async def get_tasks_lite(user_id):
+    rows = await pool.fetch('''
+        SELECT task_id, title 
+        FROM tasks WHERE user_id = $1''', user_id)
+    return rows
+
+async def delete_task(task_id, user_id):
+    await pool.execute('DELETE FROM tasks WHERE task_id = $1 AND user_id = $2', task_id, user_id)
