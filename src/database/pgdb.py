@@ -44,4 +44,5 @@ async def delete_task(task_id, user_id):
     await pool.execute('DELETE FROM tasks WHERE task_id = $1 AND user_id = $2', task_id, user_id)
 
 async def change_task_status(user_id, task_id, task_status):
-    await pool.execute("UPDATE tasks SET task_status = $1 WHERE user_id = $2 AND task_id = $3", (task_status, user_id, task_id))
+    return await pool.fetchrow("UPDATE tasks SET task_status = $1 WHERE user_id = $2 AND task_id = $3 RETURNING task_id",
+    task_status, user_id, task_id,)
