@@ -28,3 +28,9 @@ async def add_tasks(user_id, title, description, priority, deadline):
         INSERT INTO tasks(user_id, title, description, priority, deadline)
         VALUES($1, $2, $3, $4, $5)
     ''', user_id, title, description, priority, deadline)
+
+async def get_tasks(user_id):
+    rows = await pool.fetch('''
+        SELECT task_id, title, description, task_status, priority, deadline 
+        FROM tasks WHERE user_id = $1''', user_id)
+    return rows

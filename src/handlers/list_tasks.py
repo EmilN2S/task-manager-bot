@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery
 
 from keyboards.main_inline import main_keyboard
-from database.db import get_tasks
+from database.pgdb import get_tasks
 from utils import priority_bool_to_str, completed_bool_to_str
 
 router = Router()
@@ -15,13 +15,13 @@ async def list_tasks_callback_handler(callback_query: CallbackQuery):
         text = "You have no tasks yet"
     else:
         lines = []
-        for i, (_, title, description, priority, completed, deadline) in enumerate(tasks, start=1):
+        for i, (_, title, description, priority, task_status, deadline) in enumerate(tasks, start=1):
             lines.append(
                 f"{i}. {title}\n"
                 f"{description or '—'}\n"
-                f"Priority: {priority_bool_to_str(priority)}\n"
                 f"Deadline: {deadline or 'none'}\n"
-                f"Completed: {completed_bool_to_str(completed)}"
+                f"Priority: {priority_bool_to_str(priority)}, "
+                f"Completed: {completed_bool_to_str(task_status)}"
             )
         text = "Your tasks:\n\n" + "\n\n".join(lines)
 
